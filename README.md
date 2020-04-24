@@ -1,6 +1,6 @@
 # 把网易云音乐的日文歌词加上注音吧\!
 
-可以把网易云音乐的日文歌词加上注音(效果见[Test.md])，也可以全部转换成罗马音(效果见[TestRomaji.md])，两者结果大部分准确。
+可以把网易云音乐的日文歌词加上注音(效果见[Test.md](https://github.com/Unarimit/Japanese-Music-ZhuYin-Tool/blob/master/Test.md))，也可以全部转换成罗马音(效果见[TestRomaji.md](https://github.com/Unarimit/Japanese-Music-ZhuYin-Tool/blob/master/TestRomaji.md))，两者结果大部分准确。
 
 网易云版本2.7.1, Windows10, 2020/4/24 功能正常
 
@@ -8,6 +8,7 @@
 
 - 下载并安装 [mecab-0.996.exe](https://drive.google.com/drive/folders/0B4y35FiV1wh7fjQ5SkJETEJEYzlqcUY4WUlpZmR4dDlJMWI5ZUlXN2xZN2s2b0pqT3hMbTQ)
     >访问不了google? 去百度一下别的下载方法！
+    >最好选择UTF-8的字典(在安装选字典编码的时候)
 - 下载release中的zhuyin.exe
 - 将要改的歌先用网易云下下来
 - 让你的网易云连不上网，并清空缓存
