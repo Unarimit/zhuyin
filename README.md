@@ -8,6 +8,7 @@
 
 - 下载并安装 [mecab-0.996.exe](https://drive.google.com/drive/folders/0B4y35FiV1wh7fjQ5SkJETEJEYzlqcUY4WUlpZmR4dDlJMWI5ZUlXN2xZN2s2b0pqT3hMbTQ)
     >访问不了google? 去百度一下别的下载方法！
+    >
     >最好选择UTF-8的字典(在安装选字典编码的时候)
 - 下载release中的zhuyin.exe
 - 将要改的歌先用网易云下下来
@@ -16,6 +17,7 @@
     > 也可以直接断网
 - 打开zhuyin.exe，找到歌词的目录进行替换
     > 一般在C:\Users\\[你的用户名]\AppData\Local\Netease\CloudMusic\webdata，那些一大堆数字的就是歌词文件了
+    >
     > 注:AppData是一个隐藏文件夹
 - 重新打开网易云(此时网易云不能访问网络)
     > 如果之后联网让网易云拿到缓存的话，再清空一下缓存即可。
