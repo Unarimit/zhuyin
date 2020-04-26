@@ -1,6 +1,7 @@
 import re
 import MeCab
 import NakaDictionary
+from Debug import DEBUG
 
 
 class PlayMode:
@@ -17,12 +18,18 @@ class Processor:
         self.Mode = mode
 
     def process(self,  file_name: str = '123') -> str:
-        text = open(file_name, encoding='utf-8').read()
+        try:
+            text = open(file_name, encoding='utf-8').read()
+        except UnicodeDecodeError:
+            return ""
+        if text[0] != '{':
+            return ""
+
         lyric_begin = text.find('"lyric"')  # 是 "lyric" 的 " 的index
         lyric_begin = lyric_begin + len('"lyric":"')
         # begin = text[0:lyric_begin]
         temp = text[lyric_begin:]
-        lyric_end = temp.find('"')
+        lyric_end = temp.find('"},')  # 小心转义字符
         lyric = temp[:lyric_end]  # not with "
         lines = lyric.split("\\n")  # every lines lose \n
 
@@ -48,7 +55,8 @@ class Processor:
                 processed_lyric += lines[i] + '\\n'
                 continue
 
-            print(pure_l)
+            if DEBUG:
+                print(pure_l)
             # 初步处理 \u3000
             pure_l = re.sub('\u3000', ' ', pure_l)
             segment_line = pure_l.split(' ')  # 有没有使用空格分开不同的句子
@@ -62,11 +70,31 @@ class Processor:
                     processed_text += self._process_romaji(segment) + ' '
                 elif self.Mode == PlayMode.HIRA_ZHUYIN_SP:
                     processed_text += self._process_hira_sp(segment) + ' '
-            processed_lyric += lines[i][:time_end] + processed_text + '\\n'
+            processed_lyric += lines[i][:time_end] + processed_text[:-1] + '\\n'
         # end for
-        print(processed_lyric)
+        if DEBUG:
+            print(processed_lyric)
         result = text[:lyric_begin] + processed_lyric + temp[lyric_end:]
-        print(result)
+        ''' clear klyric'''
+        '''
+        klyric_begin = result.find('"klyric":{')
+        if klyric_begin != -1:
+            klyric_begin += len('"klyric":{')
+            if result[klyric_begin:].find('null') == -1 or result[klyric_begin:].find('null') > 35:
+                klyric_end = result[klyric_begin:].find('}')
+                clear_str = '"version":0,"lyric":null'
+                result = result[:klyric_begin] + clear_str + result[klyric_begin:][klyric_end:]
+                # version = 8 chu wen ti
+                version_begin = result.find('"lrc":{"version":') + len('"lrc":{"version":')
+                # print(result[version_begin]) first number
+                if 47 < ord(result[version_begin+1]) < 58:
+                    result = result[:version_begin] + '10' + result[version_begin + 2:]
+                else:
+                    result = result[:version_begin] + '10' + result[version_begin + 1:]
+        '''
+
+        if DEBUG:
+            print(result)
         return result
 
     def _process_hira(self, pure_line: str) -> str:
@@ -96,10 +124,14 @@ class Processor:
                     processed_line += word
                 else:
                     processed_line += word + '(' + hiragana + ')'
-            print(processed_line)
-            print("######################")
+
+            if DEBUG:
+                print(processed_line)
+                print("######################")
         except RuntimeError as e:
-            print("RuntimeError:" + str(e))
+            if DEBUG:
+                print("RuntimeError:" + str(e))
+            print('可能因为没有安装MeCab，出现了异常')
 
         return processed_line
 
@@ -130,10 +162,13 @@ class Processor:
                     processed_line += word
                 else:
                     processed_line += word + '(' + read + ')'
-            print(processed_line)
-            print("######################")
+            if DEBUG:
+                print(processed_line)
+                print("######################")
         except RuntimeError as e:
-            print("RuntimeError:" + str(e))
+            if DEBUG:
+                print("RuntimeError:" + str(e))
+            print('可能因为没有安装MeCab，出现了异常')
 
         return processed_line
 
@@ -157,10 +192,13 @@ class Processor:
                         hiragana += kata
 
                 processed_line += hiragana + " "
-            print(processed_line)
-            print("######################")
+            if DEBUG:
+                print(processed_line)
+                print("######################")
         except RuntimeError as e:
-            print("RuntimeError:" + str(e))
+            if DEBUG:
+                print("RuntimeError:" + str(e))
+            print('可能因为没有安装MeCab，出现了异常')
 
         return processed_line
 
@@ -191,9 +229,12 @@ class Processor:
                     processed_line += word
                 else:
                     processed_line += '{' + word + '}' + '(' + hiragana + ')'
-            print(processed_line)
-            print("######################")
+            if DEBUG:
+                print(processed_line)
+                print("######################")
         except RuntimeError as e:
-            print("RuntimeError:" + str(e))
+            if DEBUG:
+                print("RuntimeError:" + str(e))
+            print('可能因为没有安装MeCab，出现了异常')
 
         return processed_line

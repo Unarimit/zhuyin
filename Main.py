@@ -9,6 +9,7 @@ import re
 # job = Processor.Processor()
 # job.process()
 mode = Processor.PlayMode.HIRA_ZHUYIN
+is_cache = False  # 是否对cache进行替换，用于多文件
 
 
 def openfile() -> None:
@@ -31,7 +32,6 @@ def openfile() -> None:
             tk.messagebox.askquestion(title='提示', message='文件名称应该全是数字！，或者是*bak')
             return
 
-
     print(filePath)
     # do transform
     job = Processor.Processor(v.get())
@@ -39,6 +39,9 @@ def openfile() -> None:
         result = job.process(filePath)
     else:
         result = job.process(filePath+'bak')
+
+    if result == '':
+        tk.messagebox.askquestion(title='提示', message='Unicode 解码失败, 请确认是否为歌词文件')
 
     if operate_bat is False and os.path.isfile(filePath+'bak'):
         tk.messagebox.askquestion(title='提示', message='已存在bak，请对bak操作')
@@ -58,13 +61,20 @@ def openfolder() -> None:
     if folderName is None or folderName == '':
         return
     count = 0
-    for dirpath, dirnames, filenames  in os.walk(folderName):
+    for dirpath, dirnames, filenames in os.walk(folderName):
         for filename in filenames:
             filePath = dirpath + '/' + filename
             print(filePath)
             if process_single_file(filePath) is True:
                 count += 1
     tk.messagebox.askquestion(title='提示', message='完成替换！共' + str(count) + '个文件')
+
+
+def open_cache_folder() -> None:
+    global is_cache
+    is_cache = True
+    openfolder()
+    is_cache = False
 
 
 def process_single_file(filePath: str) -> bool:
@@ -75,9 +85,13 @@ def process_single_file(filePath: str) -> bool:
         return False
 
     filename = filePath.split('/')[-1]
-    operate_bat = False
-    if re.fullmatch(r'.*\d', filename) is None:
-        return False
+    operate_bat = False  # 不对bak操作
+    if is_cache is False:
+        if re.fullmatch(r'.*\d', filename) is None:
+            return False
+    else:
+        if re.search('bak', filename) is not None:
+            return False
 
     # do transform
     job = Processor.Processor(v.get())
@@ -85,6 +99,9 @@ def process_single_file(filePath: str) -> bool:
         result = job.process(filePath)
     else:
         result = job.process(filePath+'bak')
+
+    if result == '':
+        return False
 
     if operate_bat is False and os.path.isfile(filePath+'bak'):
         return False
@@ -96,6 +113,25 @@ def process_single_file(filePath: str) -> bool:
     f.write(result)
 
     return True
+
+
+def openfolder_restore_bak() -> None:
+    folderName = tk.filedialog.askdirectory()
+    if folderName is None or folderName == '':
+        return
+    count = 0
+    for dirpath, dirnames, filenames in os.walk(folderName):
+        for filename in filenames:
+            if re.search('bak', filename) is not None:
+                continue
+            filePath = dirpath + '/' + filename
+            if os.path.isfile(filePath + 'bak'):
+                print(filePath)
+                os.remove(filePath)
+                os.rename(filePath + 'bak', filePath)
+                count += 1
+
+    tk.messagebox.askquestion(title='提示', message='还原了' + str(count) + '个文件')
 
 
 def mode_change() -> None:
@@ -112,5 +148,7 @@ tk.Radiobutton(root, text='片假名注音', command=mode_change, variable=v, va
 tk.Radiobutton(root, text='变成罗马音', command=mode_change, variable=v, value=3).pack()
 tk.Button(root, text='替换文件', command=openfile).pack()
 tk.Button(root, text='替换文件夹下所有文件, [有bak的](已经替换过的)不会替换', command=openfolder).pack()
+tk.Button(root, text='替换**缓存**文件夹下所有文件, [有bak的](已经替换过的)不会替换', command=open_cache_folder).pack()
+tk.Button(root, text='通过bak还原指定文件夹中的所有歌词文件', command=openfolder_restore_bak).pack()
 v.set(1)
 root.mainloop()
