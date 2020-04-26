@@ -14,7 +14,7 @@
     >访问不了google? 去百度一下别的下载方法！
     >
     >最好选择UTF-8的字典(在安装选字典编码的时候)
-- 下载release中的[zhuyin.exe](https://github.com/Unarimit/Japanese-Music-ZhuYin-Tool/releases/download/ver1.0/zhuyin.exe)
+- 下载release中的[zhuyin.exe](https://github.com/Unarimit/Japanese-Music-ZhuYin-Tool/releases/download/ver1.1/zhuyin.exe)
 - 关闭网易云音乐
     > 一些歌词会被载入到内存中，退出以释放
 - 打开zhuyin.exe，找到歌词的**缓存**目录进行替换
@@ -30,7 +30,7 @@
     >访问不了google? 去百度一下别的下载方法！
     >
     >最好选择UTF-8的字典(在安装选字典编码的时候)
-- 下载release中的[zhuyin.exe](https://github.com/Unarimit/Japanese-Music-ZhuYin-Tool/releases/download/ver1.0/zhuyin.exe)
+- 下载release中的[zhuyin.exe](https://github.com/Unarimit/Japanese-Music-ZhuYin-Tool/releases/download/ver1.1/zhuyin.exe)
 - 将要改的歌先用网易云下下来
 - 让你的网易云连不上网，并清空缓存
     > 可以在设置里面的工具选单，将Http代理指向不存在的代理端口，例如 服务器:127.0.0.1 端口:80
